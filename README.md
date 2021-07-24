@@ -10,7 +10,7 @@
 - Replace IPLD with Arweave
 - Template storage and marketplace
 - Integration with XDV Node / Protocol for enhanced security and privacy features
-- DAO or Profit Sharing Org that keeps funding this open source project independenly
+- DAO or Profit Sharing Org that keeps funding this open source project independently
 
 ### Support
 
