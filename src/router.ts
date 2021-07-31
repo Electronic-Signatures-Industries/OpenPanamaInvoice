@@ -33,14 +33,8 @@ export default new Router({
 
       children: [
         {
-          path: '/',
-          name: 'smartcard',
-          // @ts-ignore
-          component: SmartcardDocuments,
-        },
-        {
           name: 'Editor',
-          path: 'facturadorbeta',
+          path: '/',
           // @ts-ignore
           component: TemplateEditor,
         },

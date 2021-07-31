@@ -15,6 +15,21 @@ import GAuth from 'vue-google-oauth2'
 import Cryptoicon from 'vue-cryptoicon';
 // For all icons
 import icon from 'vue-cryptoicon/src/icons';
+import VueCodemirror from 'vue-codemirror'
+ 
+// require styles
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/addon/fold/foldgutter.css';
+import 'codemirror/lib/codemirror';
+import 'codemirror/addon/fold/foldcode';
+import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/fold/brace-fold';
+import 'codemirror/addon/fold/xml-fold';
+import 'codemirror/addon/fold/indent-fold';
+import 'codemirror/addon/fold/markdown-fold';
+import 'codemirror/addon/fold/comment-fold';
+import 'codemirror/mode/xml/xml';
+
 Cryptoicon.add(icon);
 Vue.use(Cryptoicon);
 
@@ -34,6 +49,14 @@ Vue.use(Vuebar);
 // Vue.use(VueWorker)
 Vue.config.productionTip = true;
 
+
+// require more codemirror resource...
+ 
+// you can set default global options and events when use
+Vue.use(VueCodemirror, /* { 
+  options: { theme: 'base16-dark', ... },
+  events: ['scroll', ...]
+} */)
 
 
 // @ts-ignore

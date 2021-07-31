@@ -94,59 +94,7 @@
     </v-menu> -->
     <!---Messages -->
     <!---User -->
-    <v-tooltip bottom>
-      <template v-slot:activator="{ on }">
-        <v-btn dark icon class="m-3" v-on="on">
-          <cryptoicon symbol="bnb" size="24" color="white" />
-        </v-btn>
-      </template>
-      <span>BNB {{ balances.bnb }}</span>
-    </v-tooltip>
-    <v-tooltip bottom>
-      <template v-slot:activator="{ on }">
-        <v-btn dark icon class="m-3" v-on="on">
-          <cryptoicon symbol="dai" size="24" color="white" />
-        </v-btn>
-      </template>
-      <span>DAI {{ balances.dai }}</span>
-    </v-tooltip>
-    <v-tooltip bottom>
-      <template v-slot:activator="{ on }">
-        <v-btn dark icon class="m-3" v-on="on">
-          <cryptoicon symbol="dai" size="24" color="white" />
-        </v-btn>
-      </template>
-      <span>DAI Mock {{ balances.daiMock }}</span>
-    </v-tooltip>
-
-
-    <v-tooltip bottom>
-      <template v-slot:activator="{ on }">
-        <v-btn dark icon class="m-3" v-on="on" href="https://twitter.com/molekilla/status/1416434509944393736?s=20">
-          <v-icon>mdi-cast-education</v-icon>
-        </v-btn>
-      </template>
-      <span>Tutorials</span>
-    </v-tooltip>
-    <v-tooltip bottom>
-      <template v-slot:activator="{ on }">
-        <v-btn dark icon class="m-3" v-on="on" @click="web3Connect">
-          <v-icon v-if="!connected">mdi-power-standby</v-icon>
-          <v-icon v-if="connected">mdi-wifi</v-icon>
-        </v-btn>
-      </template>
-      <span>Connect</span>
-    </v-tooltip>
-    <v-tooltip bottom>
-      <template v-slot:activator="{ on }">
-        <v-btn dark icon class="m-3" v-on="on" href="/#/facturadorbeta">
-          <v-icon>mdi-xml</v-icon>
-        </v-btn>
-      </template>
-      <span>Prueba gratuita, modelador de factura electronica</span>
-    </v-tooltip>
-
-    <!---User -->
+     <!---User -->
     <v-dialog v-model="shareAddressDialog" max-width="500px">
       <v-card>
         <v-card-title>
