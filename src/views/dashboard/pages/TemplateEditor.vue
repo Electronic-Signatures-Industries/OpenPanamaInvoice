@@ -131,7 +131,7 @@
       </v-col> -->
 
           <v-col sm="3">
-            <v-btn class="primary" @click="sign">Firmar</v-btn>
+            <v-btn class="primary" @click="connect">Conectar</v-btn>
           </v-col>
           <v-col sm="3">
             <v-btn class="secondary" @click="() => {}">Transform</v-btn>
@@ -154,6 +154,7 @@
   </v-container>
 </template>
 <script lang="ts">
+
 import {
   TypedRFE,
   Totales,
@@ -195,13 +196,22 @@ import "codemirror/theme/base16-dark.css";
 import Countries from "./widgets/Countries.vue";
 import ItemIndex from "./widgets/lineitem/Item.vue";
 import GeneralesIndex from "./widgets/generales/Generales.vue";
-// import sampleSchema from "../../../sampleSchema.js";
+import { HDLocalWeb3Client } from "anconjs-datacontract/src";
+import { createKeplrWallet } from "@/anconjs/KeplrWrapper";
+import Web3, * as web3 from "web3";
+import config from "../../../anconjs/anconConfig";
+import { txClient } from "anconjs-datacontract/src";
+import { TxEvent, TxResponse } from "@cosmjs/tendermint-rpc";
+import { fromUtf8 } from "@cosmjs/encoding";
+import {contract} from './samples/contract'
+import { ethers } from "ethers";
+
+// const xdvnftAbi = require("../../../../abi/xdvnft");
 const rs = require("jsrsasign");
 const fs = require('fs');
 const sampleSchema = require('./samples/sampleSchema')
 const sampleData = JSON.stringify(require('./samples/sampleData'))
 const inputargs = JSON.stringify(require('./samples/inputargs'))
-import {contract} from './samples/contract'
 
 // const sampleSchema = JSON.parse(fs.readFileSync('../../../sampleSchema.json'));
 
@@ -234,6 +244,29 @@ export default class TemplateEditor extends Vue {
   sampleData = sampleData;
   inputargs = inputargs;
   sampleJsonSchema  = JSON.stringify(sampleSchema);
+  web3instance: Web3;
+  anconWeb3client: HDLocalWeb3Client;
+  walletEthAddress = "";
+  walletEthAddressDisplay = "Not connected";
+  walletCosmosAddress = "";
+  walletCosmosAddressDisplay = "Not connected";
+  alertMessage = "";
+  currentAccount: any;
+  daiWeb3contract: any;
+  DAIAddress: string = `0xb0c578D19f6E7dD455798b76CC92FfdDb61aD635`;
+  XDVNFTAddress: string = `0xEcf598C751c0e129e68BB4cF7580a88cB2f03B46`;
+  nftWeb3Contract: any;
+  connected = false;
+  balances = {
+    bnb: "0",
+    dai: "0",
+    daiMock: "0",
+  };
+  ethersContract: any;
+  transactions = [];
+  anchorContract: ethers.Contract;
+
+
   get totalItems() {
     const n = this.model.gItem.reduce((prev, c) => {
       const p = (c.gPrecios || {}) as any;
@@ -438,6 +471,124 @@ export default class TemplateEditor extends Vue {
     // gen
     // this.xml = await FEBuilder.create().rFE(this.model).toXml();
   }
+
+  async transactionCompleted(tx: TxResponse) {
+    debugger;
+    if (tx.result.events.length === 0) {
+      console.log(tx.result.log);
+      this.alertMessage = `An error has occurred`;
+      this.loading = false;
+      return;
+    }
+
+    const response = tx.result.events.find((a) => a.type === "DidCreated");
+    if (response) {
+      const attrs = (k) =>
+        fromUtf8(response.attributes.find((a) => fromUtf8(a.key) === k).value);
+      this.alertMessage = `DID created <a href="${attrs("Url")}">${attrs("Did")}</a> stored as CID ${attrs("Cid")}`;
+      this.loading = false;
+    }
+  }
+
+  async connect(passphrase: string) {
+    await createKeplrWallet();
+    //@ts-ignore
+    const accounts = await window.ethereum.enable();
+    //@ts-ignore
+    this.web3instance = new Web3(window.ethereum);
+    this.anconWeb3client = new HDLocalWeb3Client(
+      "lend lock kit kiss walnut flower expect text upset nut arrive hub waste stairs climb neither must crowd harvest network wife lizard shiver obtain",
+      "cosmos",
+      `m/44'/118'/0'/0`,
+      config
+    );
+    await this.anconWeb3client.connect(
+      [
+        {
+          name: "ancon",
+          client: txClient,
+        },
+      ],
+      this.transactionCompleted
+    );
+
+    this.walletEthAddress = accounts[0];
+
+    this.walletEthAddressDisplay = `
+      ${this.walletEthAddress.substring(
+        0,
+        8
+      )}...${this.walletEthAddress.substring(
+      this.walletEthAddress.length - 7,
+      this.walletEthAddress.length
+    )}`;
+
+    this.currentAccount = accounts[0];
+    // DAI
+    // this.daiWeb3contract = new this.web3instance.eth.Contract(
+    //   xdvnftAbi.DAI.raw.abi,
+    //   this.DAIAddress
+    // );
+
+    // XDVNFT
+    // this.nftWeb3Contract = new this.web3instance.eth.Contract(
+    //   xdvnftAbi.XDVNFT.raw.abi,
+    //   this.XDVNFTAddress
+    // );
+
+    try {
+      this.connected = true;
+
+      this.walletCosmosAddress = this.anconWeb3client.cosmosAccount.address;
+
+      this.walletCosmosAddressDisplay = `
+      ${this.walletCosmosAddress.substring(
+        0,
+        7
+      )}...${this.walletCosmosAddress.substring(
+        this.walletCosmosAddress.length - 7,
+        this.walletCosmosAddress.length
+      )}`;
+
+      await this.loadBalances();
+      await this.loadTransactions();
+    } catch (e) {
+      alert(e.message);
+    }
+  }
+
+  async loadBalances() {
+    setInterval(async () => {
+      const [daiBal] = await this.daiWeb3contract.methods.balanceOf(
+        this.currentAccount
+      );
+
+      const bnb = await this.web3instance.eth.getBalance(this.currentAccount);
+      // const XDVNFT = this.nftWeb3Contract.methods.balanceOf(this.currentAccount).send()
+      //this.balances.daiMock = ethers.utils.formatEther(XDVNFT);
+      this.balances.bnb = ethers.utils.formatEther(bnb);
+      //     this.balances.dai = ethers.utils.formatEther(daiBal);
+    }, 1250);
+  }
+
+  async loadTransactions() {
+    if (this.ethersContract) {
+      const query = this.ethersContract.filters.Transfer(this.currentAccount);
+      this.transactions = [
+        ...(await this.ethersContract.queryFilter(query)),
+        this.transactions,
+      ];
+    }
+
+    if (this.anchorContract) {
+      const query = this.anchorContract.filters.DocumentAnchored();
+      this.transactions = [
+        ...(await this.anchorContract.queryFilter(query)),
+        this.transactions,
+      ];
+    }
+  }
+
 
   async sign() {
     // const ipfsManager = new IPLDManager(didRSA.did)
