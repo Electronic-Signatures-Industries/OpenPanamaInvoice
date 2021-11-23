@@ -6,10 +6,22 @@
       color="teal"
     ></v-progress-linear>
 
-    <v-alert type="warning" dense dismissible>OpenPanamaInvoice - Beta</v-alert>
-    <v-row
-      ><v-col cols="6"  md="6">
-        <v-expansion-panels multiple v-model="panels">
+    <v-alert type="warning" dense dismissible
+      >OpenPanamaInvoice - Datacontracts</v-alert
+    >
+    <v-row>
+      <v-col cols="6" md="6">
+        <v-row>
+          <v-col>
+            <codemirror v-model="sampleJsonSchema" :options="cmOptions"></codemirror>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <codemirror v-model="xml2" :options="cmOptions"></codemirror>
+          </v-col>
+        </v-row>
+        <!-- <v-expansion-panels multiple v-model="panels">
           <v-expansion-panel>
             <v-expansion-panel-header v-slot="{ open }">
               <v-row v-show="!open" no-gutters>
@@ -80,9 +92,9 @@
               ></fe-total>
             </v-expansion-panel-content>
           </v-expansion-panel>
-        </v-expansion-panels>
+        </v-expansion-panels> -->
       </v-col>
-      <v-col cols="6"  md="6">
+      <v-col cols="6" md="6">
         <v-row>
           <!-- <v-col>
         <v-btn class="primary">Guardar como plantilla</v-btn>
@@ -118,10 +130,25 @@
         <v-btn class="primary">Guardar en almacenamiento seguro</v-btn>
       </v-col> -->
 
-          <v-col>
+          <v-col sm="3">
             <v-btn class="primary" @click="sign">Firmar</v-btn>
           </v-col>
+          <v-col sm="3">
+            <v-btn class="secondary" @click="() => {}">Transform</v-btn>
+          </v-col>
         </v-row>
+      </v-col>
+      <v-col cols="6" md="6">
+        <!-- <v-row>
+          <v-col>
+            <codemirror v-model="xml" :options="cmOptions"></codemirror>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <codemirror v-model="xml2" :options="cmOptions"></codemirror>
+          </v-col>
+        </v-row> -->
       </v-col>
     </v-row>
   </v-container>
@@ -168,7 +195,11 @@ import "codemirror/theme/base16-dark.css";
 import Countries from "./widgets/Countries.vue";
 import ItemIndex from "./widgets/lineitem/Item.vue";
 import GeneralesIndex from "./widgets/generales/Generales.vue";
+// import sampleSchema from "../../../sampleSchema.js";
 const rs = require("jsrsasign");
+const fs = require('fs');
+const sampleSchema = require('../../../sampleSchema.json')
+// const sampleSchema = JSON.parse(fs.readFileSync('../../../sampleSchema.json'));
 
 @Component({
   components: {
@@ -180,9 +211,9 @@ const rs = require("jsrsasign");
 export default class TemplateEditor extends Vue {
   cmOptions = {
     // codemirror options
-    tabSize: 4,
-    mode: "text/xml",
-    theme: "base16-dark",
+    tabSize: 2,
+    mode: "application/typescript",
+    theme: "default",
     lineNumbers: true,
     line: true,
     lineWrapping: true,
@@ -190,11 +221,12 @@ export default class TemplateEditor extends Vue {
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   };
   model: TypedRFE = new TypedRFE();
-  panels = [0,1,]
+  panels = [0, 1];
   openItems = false;
   open = false;
   xml: any = "";
   xml2: any = "";
+  sampleJsonSchema  = JSON.stringify(sampleSchema);
   get totalItems() {
     const n = this.model.gItem.reduce((prev, c) => {
       const p = (c.gPrecios || {}) as any;
@@ -397,7 +429,7 @@ export default class TemplateEditor extends Vue {
     };
 
     // gen
-    this.xml = await FEBuilder.create().rFE(this.model).toXml();
+    // this.xml = await FEBuilder.create().rFE(this.model).toXml();
   }
 
   async sign() {

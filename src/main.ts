@@ -28,7 +28,9 @@ import 'codemirror/addon/fold/xml-fold';
 import 'codemirror/addon/fold/indent-fold';
 import 'codemirror/addon/fold/markdown-fold';
 import 'codemirror/addon/fold/comment-fold';
+import '@codemirror/fold'
 import 'codemirror/mode/xml/xml';
+import 'codemirror/mode/javascript/javascript'
 
 Cryptoicon.add(icon);
 Vue.use(Cryptoicon);
