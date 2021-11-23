@@ -7,7 +7,7 @@
     ></v-progress-linear>
 
     <v-alert type="warning" dense dismissible
-      >OpenPanamaInvoice - Datacontracts</v-alert
+      >Ancon Data Contract Studio</v-alert
     >
     <v-row>
       <v-col cols="6" md="6">
@@ -18,7 +18,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <codemirror v-model="xml2" :options="cmOptions"></codemirror>
+            <codemirror v-model="sampleData" :options="cmOptions"></codemirror>
           </v-col>
         </v-row>
         <!-- <v-expansion-panels multiple v-model="panels">
@@ -105,7 +105,7 @@
       </v-col> -->
 
           <v-col>
-            <codemirror v-model="xml" :options="cmOptions"></codemirror>
+            <codemirror v-model="contractCel" :options="cmOptions"></codemirror>
           </v-col>
         </v-row>
         <v-row>
@@ -118,7 +118,7 @@
       </v-col> -->
 
           <v-col>
-            <codemirror v-model="xml2" :options="cmOptions"></codemirror>
+            <codemirror v-model="inputargs" :options="cmOptions"></codemirror>
           </v-col>
         </v-row>
         <v-row>
@@ -198,7 +198,11 @@ import GeneralesIndex from "./widgets/generales/Generales.vue";
 // import sampleSchema from "../../../sampleSchema.js";
 const rs = require("jsrsasign");
 const fs = require('fs');
-const sampleSchema = require('../../../sampleSchema.json')
+const sampleSchema = require('./samples/sampleSchema')
+const sampleData = JSON.stringify(require('./samples/sampleData'))
+const inputargs = JSON.stringify(require('./samples/inputargs'))
+import {contract} from './samples/contract'
+
 // const sampleSchema = JSON.parse(fs.readFileSync('../../../sampleSchema.json'));
 
 @Component({
@@ -226,6 +230,9 @@ export default class TemplateEditor extends Vue {
   open = false;
   xml: any = "";
   xml2: any = "";
+  contractCel = contract
+  sampleData = sampleData;
+  inputargs = inputargs;
   sampleJsonSchema  = JSON.stringify(sampleSchema);
   get totalItems() {
     const n = this.model.gItem.reduce((prev, c) => {
