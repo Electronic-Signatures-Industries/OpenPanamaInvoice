@@ -141,11 +141,12 @@ import Web3, * as web3 from "web3";
 import config from "../../../anconjs/anconConfig";
 import { txClient } from "anconjs-datacontract/src";
 import { TxEvent, TxResponse } from "@cosmjs/tendermint-rpc";
-import { fromUtf8 } from "@cosmjs/encoding";
+import { fromUtf8, toUtf8 } from "@cosmjs/encoding";
 import { contract } from "./samples/contract";
 import { ethers } from "ethers";
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
+import { MsgAddSchema } from "anconjs-datacontract/src/store/generated/Electronic-Signatures-Industries/ancon-protocol/ElectronicSignaturesIndustries.anconprotocol.anconprotocol/module/types/anconprotocol/tx";
 
 
 // const xdvnftAbi = require("../../../../abi/xdvnft");
@@ -533,26 +534,154 @@ export default class TemplateEditor extends Vue {
     }
   }
 
-  async sign() {
-    // const ipfsManager = new IPLDManager(didRSA.did)
-    // await ipfsManager.start(`http://ifesa.ipfs.pa:5001`)
+  async addDAG(): Promise<any> {
 
-    // const alice = Buffer.from('Hola Alice!')
-    // const links = []
-    // // Alice
-    // let cid = await ipfsManager.addSignedObject(alice, {
-    //   name: 'alice.txt',
-    //   contentType: 'text/html',
-    //   lastModified: new Date(),
-    // })
-    // links.push(cid)
-    // const bob = Buffer.from('Hola IPFS World!')
-    // // Bob
-    // let cid2 = await ipfsManager.addSignedObject(bob, {
-    //   name: 'bob.txt',
-    //   contentType: 'text/html',
-    //   lastModified: new Date(),
-    // })
+    const msg = MsgAddSchema.fromPartial({
+      creator: this.anconWeb3client.cosmosAccount.address,
+      did,
+      schema: toUtf8(schema),
+    });
+
+    const fee = {
+      amount: [
+        {
+          denom: "uatom",
+          amount: "240",
+        },
+      ],
+      gas: "200000",
+    };
+
+    const encoded = this.anconWeb3client.msgService.ancon.msgAddSchema(msg);
+    return this.anconWeb3client.signAndBroadcast(encoded, fee);
+  }
+  async readDAG(): Promise<any> {
+
+    const msg = MsgAddSchema.fromPartial({
+      creator: this.anconWeb3client.cosmosAccount.address,
+      did,
+      schema: toUtf8(schema),
+    });
+
+    const fee = {
+      amount: [
+        {
+          denom: "uatom",
+          amount: "240",
+        },
+      ],
+      gas: "200000",
+    };
+
+    const encoded = this.anconWeb3client.msgService.ancon.msgAddSchema(msg);
+    return this.anconWeb3client.signAndBroadcast(encoded, fee);
+  }
+  async executeDAGContract(): Promise<any> {
+
+    const msg = MsgAddSchema.fromPartial({
+      creator: this.anconWeb3client.cosmosAccount.address,
+      did,
+      schema: toUtf8(schema),
+    });
+
+    const fee = {
+      amount: [
+        {
+          denom: "uatom",
+          amount: "240",
+        },
+      ],
+      gas: "200000",
+    };
+
+    const encoded = this.anconWeb3client.msgService.ancon.msgAddSchema(msg);
+    return this.anconWeb3client.signAndBroadcast(encoded, fee);
+  }
+  async deployDAGContract(): Promise<any> {
+
+    const msg = MsgAddSchema.fromPartial({
+      creator: this.anconWeb3client.cosmosAccount.address,
+      did,
+      schema: toUtf8(schema),
+    });
+
+    const fee = {
+      amount: [
+        {
+          denom: "uatom",
+          amount: "240",
+        },
+      ],
+      gas: "200000",
+    };
+
+    const encoded = this.anconWeb3client.msgService.ancon.msgAddSchema(msg);
+    return this.anconWeb3client.signAndBroadcast(encoded, fee);
+  }
+  async anchorWithProof(): Promise<any> {
+
+    const msg = MsgAddSchema.fromPartial({
+      creator: this.anconWeb3client.cosmosAccount.address,
+      did,
+      schema: toUtf8(schema),
+    });
+
+    const fee = {
+      amount: [
+        {
+          denom: "uatom",
+          amount: "240",
+        },
+      ],
+      gas: "200000",
+    };
+
+    const encoded = this.anconWeb3client.msgService.ancon.msgAddSchema(msg);
+    return this.anconWeb3client.signAndBroadcast(encoded, fee);
+  }
+  async anchor(): Promise<any> {
+    
+    const msg = MsgAddSchema.fromPartial({
+      creator: this.anconWeb3client.cosmosAccount.address,
+      did,
+      schema: toUtf8(schema),
+    });
+
+    const fee = {
+      amount: [
+        {
+          denom: "uatom",
+          amount: "240",
+        },
+      ],
+      gas: "200000",
+    };
+
+    const encoded = this.anconWeb3client.msgService.ancon.msgAddSchema(msg);
+    return this.anconWeb3client.signAndBroadcast(encoded, fee);
+  }
+  async addSchema(did, schema): Promise<any> {
+    const msg = MsgAddSchema.fromPartial({
+      creator: this.anconWeb3client.cosmosAccount.address,
+      did,
+      schema: toUtf8(schema),
+    });
+
+    const fee = {
+      amount: [
+        {
+          denom: "uatom",
+          amount: "240",
+        },
+      ],
+      gas: "200000",
+    };
+
+    const encoded = this.anconWeb3client.msgService.ancon.msgAddSchema(msg);
+    return this.anconWeb3client.signAndBroadcast(encoded, fee);
+  }
+
+  async sign() {
 
     const issuer = {
       stateOrProvinceName: "PA",
