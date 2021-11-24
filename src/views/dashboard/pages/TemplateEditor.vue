@@ -14,87 +14,23 @@
         <v-row>
           <v-col>
             <v-alert type="info">JSON Schema</v-alert>
-            <codemirror v-model="sampleJsonSchema" :options="cmOptions"></codemirror>
+            <vue-json-pretty
+              :data="sampleJsonSchema"
+              @click="handleClick"
+            >
+            </vue-json-pretty>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
             <v-alert type="info">JSON Input</v-alert>
-            <codemirror v-model="sampleData" :options="cmOptions"></codemirror>
+            <vue-json-pretty
+              :data="sampleData"
+              @click="handleClick"
+            >
+</vue-json-pretty>
           </v-col>
         </v-row>
-        <!-- <v-expansion-panels multiple v-model="panels">
-          <v-expansion-panel>
-            <v-expansion-panel-header v-slot="{ open }">
-              <v-row v-show="!open" no-gutters>
-                <v-col cols="4">Generales</v-col>
-                <v-col cols="4" class="text--secondary"> # {{ id }} </v-col>
-                <v-col cols="2" class="text--secondary">
-                  de {{ emisor }}
-                </v-col>
-
-                <v-col cols="2" class="text--secondary">
-                  para {{ receptor }}
-                </v-col>
-              </v-row>
-              <v-row v-show="open" no-gutters>
-                <v-col cols="4">Generales</v-col>
-                <v-col cols="8" class="text--secondary"> </v-col>
-              </v-row>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <fe-generales
-                :template="template"
-                @input="handleUpdate"
-                v-model="model.gDGen"
-              ></fe-generales>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <v-expansion-panel >
-            <v-expansion-panel-header v-slot="{ open }">
-              <v-row v-show="!open" no-gutters>
-                <v-col cols="4">Articulos</v-col>
-                <v-col cols="6" class="text--secondary">
-                  {{ model.gItem.length }} articulos
-                </v-col>
-                <v-col cols="2" class="text--secondary">
-                  B./ {{ totalItems }}
-                </v-col>
-              </v-row>
-              <v-row v-show="open" no-gutters>
-                <v-col cols="4">Articulos</v-col>
-                <v-col cols="8" class="text--secondary"> </v-col>
-              </v-row>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <fe-item
-                :template="template"
-                v-bind:itemindex.sync="model.gItem"
-              ></fe-item>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-header v-slot="{ open }">
-              <v-row v-show="!open" no-gutters>
-                <v-col cols="4">Totales</v-col>
-                <v-col cols="6" class="text--secondary"> </v-col>
-                <v-col cols="2" class="text--secondary">
-                  B./ {{ totales }}
-                </v-col>
-              </v-row>
-              <v-row v-show="open" no-gutters>
-                <v-col cols="4">Totales</v-col>
-                <v-col cols="8" class="text--secondary"> </v-col>
-              </v-row>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <fe-total
-                :template="template"
-                v-bind:totales.sync="model.gTot"
-              ></fe-total>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels> -->
       </v-col>
       <v-col cols="6" md="6">
         <v-row>
@@ -158,7 +94,6 @@
   </v-container>
 </template>
 <script lang="ts">
-
 import {
   TypedRFE,
   Totales,
@@ -207,15 +142,18 @@ import config from "../../../anconjs/anconConfig";
 import { txClient } from "anconjs-datacontract/src";
 import { TxEvent, TxResponse } from "@cosmjs/tendermint-rpc";
 import { fromUtf8 } from "@cosmjs/encoding";
-import {contract} from './samples/contract'
+import { contract } from "./samples/contract";
 import { ethers } from "ethers";
+import VueJsonPretty from 'vue-json-pretty'
+import 'vue-json-pretty/lib/styles.css'
+
 
 // const xdvnftAbi = require("../../../../abi/xdvnft");
 const rs = require("jsrsasign");
-const fs = require('fs');
-const sampleSchema = require('./samples/sampleSchema')
-const sampleData = JSON.stringify(require('./samples/sampleData'))
-const inputargs = JSON.stringify(require('./samples/inputargs'))
+const fs = require("fs");
+const sampleSchema = require("./samples/sampleSchema");
+const sampleData = JSON.stringify(require("./samples/sampleData"));
+const inputargs = JSON.stringify(require("./samples/inputargs"));
 
 // const sampleSchema = JSON.parse(fs.readFileSync('../../../sampleSchema.json'));
 
@@ -224,6 +162,7 @@ const inputargs = JSON.stringify(require('./samples/inputargs'))
     "fe-total": TotalIndex,
     "fe-item": ItemIndex,
     "fe-generales": GeneralesIndex,
+     "vue-json-pretty":VueJsonPretty,
   },
 })
 export default class TemplateEditor extends Vue {
@@ -244,10 +183,10 @@ export default class TemplateEditor extends Vue {
   open = false;
   xml: any = "";
   xml2: any = "";
-  contractCel = contract
+  contractCel = contract;
   sampleData = sampleData;
   inputargs = inputargs;
-  sampleJsonSchema  = JSON.stringify(sampleSchema);
+  sampleJsonSchema = JSON.stringify(sampleSchema);
   web3instance: Web3;
   anconWeb3client: HDLocalWeb3Client;
   walletEthAddress = "";
@@ -269,7 +208,6 @@ export default class TemplateEditor extends Vue {
   ethersContract: any;
   transactions = [];
   anchorContract: ethers.Contract;
-
 
   get totalItems() {
     const n = this.model.gItem.reduce((prev, c) => {
@@ -489,7 +427,9 @@ export default class TemplateEditor extends Vue {
     if (response) {
       const attrs = (k) =>
         fromUtf8(response.attributes.find((a) => fromUtf8(a.key) === k).value);
-      this.alertMessage = `DID created <a href="${attrs("Url")}">${attrs("Did")}</a> stored as CID ${attrs("Cid")}`;
+      this.alertMessage = `DID created <a href="${attrs("Url")}">${attrs(
+        "Did"
+      )}</a> stored as CID ${attrs("Cid")}`;
       this.loading = false;
     }
   }
@@ -592,7 +532,6 @@ export default class TemplateEditor extends Vue {
       ];
     }
   }
-
 
   async sign() {
     // const ipfsManager = new IPLDManager(didRSA.did)
