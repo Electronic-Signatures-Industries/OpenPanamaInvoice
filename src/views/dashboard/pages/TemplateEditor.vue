@@ -13,11 +13,13 @@
       <v-col cols="6" md="6">
         <v-row>
           <v-col>
+            <v-alert type="info">JSON Schema</v-alert>
             <codemirror v-model="sampleJsonSchema" :options="cmOptions"></codemirror>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
+            <v-alert type="info">JSON Input</v-alert>
             <codemirror v-model="sampleData" :options="cmOptions"></codemirror>
           </v-col>
         </v-row>
@@ -105,6 +107,7 @@
       </v-col> -->
 
           <v-col>
+            <v-alert type="info">DAG Contract</v-alert>
             <codemirror v-model="contractCel" :options="cmOptions"></codemirror>
           </v-col>
         </v-row>
@@ -118,6 +121,7 @@
       </v-col> -->
 
           <v-col>
+            <v-alert type="info">Contract Arguments</v-alert>
             <codemirror v-model="inputargs" :options="cmOptions"></codemirror>
           </v-col>
         </v-row>

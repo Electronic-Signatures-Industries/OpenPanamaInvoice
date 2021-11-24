@@ -41,7 +41,7 @@
     "@starport/vuex": "^0.1.54",
     "@stomp/stompjs": "^6.1.0",
     "3id-did-provider": "^0.1.2",
-    "anconjs-datacontract": "^0.3.0-rc.3",
+    "anconjs-datacontract": "^0.3.0-rc.4",
     "axios": "^0.21.1",
     "bl": "^4.0.2",
     "bn.js": "^5.1.1",
