@@ -13,22 +13,28 @@
       <v-col cols="6" md="6">
         <v-row>
           <v-col>
-            <v-alert type="info">JSON Schema</v-alert>
-            <vue-json-pretty
-              :data="sampleJsonSchema"
-              @click="handleClick"
-            >
-            </vue-json-pretty>
+            <v-card>
+              <!-- <v-alert type="info">JSON Schema</v-alert> -->
+              <v-card-title>JSON Schema</v-card-title>
+              <vue-json-pretty
+                :data="sampleJsonSchema"
+                @click="handleClick"
+              >
+              </vue-json-pretty>
+            </v-card>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-alert type="info">JSON Input</v-alert>
-            <vue-json-pretty
-              :data="sampleData"
-              @click="handleClick"
-            >
-</vue-json-pretty>
+            <v-card>
+              <!-- <v-alert type="info">JSON Input</v-alert> -->
+              <v-card-title>JSON Input</v-card-title>
+              <vue-json-pretty
+                :data="sampleData"
+                @click="handleClick"
+              >
+              </vue-json-pretty>
+            </v-card>
           </v-col>
         </v-row>
       </v-col>
@@ -43,8 +49,11 @@
       </v-col> -->
 
           <v-col>
-            <v-alert type="info">DAG Contract</v-alert>
-            <codemirror v-model="contractCel" :options="cmOptions"></codemirror>
+            <!-- <v-alert type="info">DAG Contract</v-alert> -->
+            <v-card>
+              <v-card-title>DAG Contract</v-card-title>
+              <codemirror v-model="contractCel" :options="cmOptions"></codemirror>
+            </v-card>
           </v-col>
         </v-row>
         <v-row>
@@ -57,8 +66,11 @@
       </v-col> -->
 
           <v-col>
-            <v-alert type="info">Contract Arguments</v-alert>
-            <codemirror v-model="inputargs" :options="cmOptions"></codemirror>
+            <!-- <v-alert type="info">Contract Arguments</v-alert> -->
+            <v-card>
+              <v-card-title>Contract Arguments</v-card-title>
+              <codemirror v-model="inputargs" :options="cmOptions"></codemirror>
+            </v-card>
           </v-col>
         </v-row>
         <v-row>
@@ -424,7 +436,7 @@ export default class TemplateEditor extends Vue {
       return;
     }
 
-    const response = tx.result.events.find((a) => a.type === "DidCreated");
+    const response = tx.result.events.find((a) => a.type === "AddSchema");
     if (response) {
       const attrs = (k) =>
         fromUtf8(response.attributes.find((a) => fromUtf8(a.key) === k).value);
